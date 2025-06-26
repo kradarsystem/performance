@@ -5,272 +5,379 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>한국레이더시스템 - 주요 납품 실적</title>
     
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     
     <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
     
-    <!-- Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
 
-    <!-- Chart.js for Bar Chart -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
-        :root {
-            --primary-color: #2563eb; /* blue-600 */
-            --secondary-color: #7c3aed; /* violet-600 */
-        }
-        html { scroll-behavior: smooth; }
         body {
             font-family: 'Noto Sans KR', sans-serif;
-            background-color: #f0f4f9; /* A slightly cooler gray */
+            background-color: #f8fafc;
+            color: #1e293b;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
         }
-        .font-poppins { font-family: 'Poppins', sans-serif; }
-
-        .kpi-card, .solution-item, .chart-card, .list-card {
-            background-color: white;
-            border-radius: 1rem; /* 16px */
-            border: 1px solid #e2e8f0; /* slate-200 */
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
-            transition: all 0.3s ease-in-out;
+        
+        .main-container {
+            width: 1280px;
+            height: 800px;
+            overflow-y: auto;
+            background-color: #f8fafc;
+            background-image: url('https://cdn.jsdelivr.net/gh/joaopereirawd/fakeLoader.js@1.1.0/img/dot.svg');
+            background-size: 20px 20px;
+            background-repeat: repeat;
         }
-        .kpi-card:hover, .solution-item:hover, .chart-card:hover, .list-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        
+        .solution-card, .region-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
         }
-
-        .details-list::-webkit-scrollbar { width: 6px; }
-        .details-list::-webkit-scrollbar-track { background: #e2e8f0; }
-        .details-list::-webkit-scrollbar-thumb { background: #a5b4fc; border-radius: 3px; }
-
-        .info-placeholder-icon {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        .solution-card:hover, .region-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.1);
         }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.05); }
+        .region-card.active {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .chart-container {
+            height: 340px !important;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 500px;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+        }
+        
+        .modal-content::-webkit-scrollbar,
+        .main-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .modal-content::-webkit-scrollbar-track,
+        .main-container::-webkit-scrollbar-track {
+            background: #e2e8f0;
+        }
+        .modal-content::-webkit-scrollbar-thumb,
+        .main-container::-webkit-scrollbar-thumb {
+            background: #9ca3af;
+            border-radius: 3px;
+        }
+        .modal-content::-webkit-scrollbar-thumb:hover,
+        .main-container::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+        
+        .header-minimal {
+            background-color: #e0e7ff;
+        }
+        
+        .region-grid-container {
+            max-height: 240px;
+            overflow-y: auto;
         }
     </style>
 </head>
-<body class="antialiased p-4 md:p-8">
+<body>
+    <div class="main-container">
+        <div class="container mx-auto p-3">
+            
+            <header class="text-center mb-6 py-6 rounded-lg header-minimal">
+                <h1 class="text-3xl font-black text-gray-900">한국레이더시스템 주요 납품 실적</h1>
+                <p class="text-sm text-gray-600 mt-1">전국 각지에 한국레이더시스템의 기술이 함께합니다.</p>
+            </header>
 
-    <div class="container mx-auto">
-        
-        <header class="text-center mb-10">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-800 font-poppins tracking-tight">
-                주요 납품 실적
-            </h1>
-            <p class="mt-3 text-lg text-slate-500">전국 각지에 한국레이더시스템의 기술이 함께합니다.</p>
-        </header>
-
-        <!-- KPI & Solutions Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <div class="kpi-card p-6 flex items-center">
-                <div class="mr-6">
-                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-violet-100 text-blue-600 flex items-center justify-center">
-                        <i class="ph-map-trifold text-5xl"></i>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+                <div class="lg:col-span-2 bg-white p-4 rounded-lg shadow-lg border border-slate-200">
+                    <h2 class="text-lg font-bold text-gray-800 mb-3 text-center">지역별 납품 실적 현황</h2>
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
                     </div>
                 </div>
-                <div class="flex-1">
-                    <p class="text-slate-500 text-lg font-bold">납품 지자체 현황</p>
-                    <div class="flex items-baseline mt-2 space-x-6">
-                        <div>
-                            <p class="text-4xl font-black text-blue-600">15<span class="text-2xl font-semibold text-slate-700 ml-1">개</span></p>
-                            <p class="text-base text-slate-500 -mt-1">광역지자체</p>
+                <div class="lg:col-span-1 flex flex-col gap-4">
+                    <div class="bg-white p-4 rounded-lg shadow-lg border border-slate-200 text-center relative overflow-hidden flex-grow">
+                        <i class="fas fa-map text-6xl text-slate-100 absolute -right-2 -bottom-2"></i>
+                        <div class="relative z-10">
+                            <i class="fas fa-map-pin text-3xl text-blue-500 mx-auto mb-2"></i>
+                            <p class="text-slate-500 text-sm font-bold">납품 지자체 현황</p>
+                            <p class="text-2xl font-black text-blue-600 mt-2">15<span class="text-lg font-semibold text-slate-700 ml-1">개</span></p>
+                            <p class="text-xs text-slate-500">광역지자체</p>
+                            <p class="text-2xl font-black text-blue-600 mt-1">79<span class="text-lg font-semibold text-slate-700 ml-1">개</span></p>
+                            <p class="text-xs text-slate-500">시군구</p>
                         </div>
-                        <div>
-                            <p class="text-4xl font-black text-blue-600">79<span class="text-2xl font-semibold text-slate-700 ml-1">개</span></p>
-                            <p class="text-base text-slate-500 -mt-1">시군구</p>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-lg border border-slate-200">
+                        <h3 class="text-lg font-bold text-gray-800 mb-3 text-center flex items-center justify-center">
+                            <i class="fas fa-lightbulb text-xl text-blue-500 mr-2"></i>
+                            주요 솔루션
+                        </h3>
+                        <div class="space-y-2">
+                            <div class="solution-card bg-slate-50 p-2 rounded-lg flex items-center">
+                               <i class="fas fa-car-alt text-lg text-pink-500 mr-2"></i>
+                               <p class="font-medium text-slate-700 text-xs">차량 번호 인식</p>
+                            </div>
+                            <div class="solution-card bg-slate-50 p-2 rounded-lg flex items-center">
+                               <i class="fas fa-water text-lg text-blue-500 mr-2"></i>
+                               <p class="font-medium text-slate-700 text-xs">스마트 소하천 계측</p>
+                            </div>
+                            <div class="solution-card bg-slate-50 p-2 rounded-lg flex items-center">
+                               <i class="fas fa-traffic-light text-lg text-yellow-500 mr-2"></i>
+                               <p class="font-medium text-slate-700 text-xs">스마트 교차로</p>
+                            </div>
+                            <div class="solution-card bg-slate-50 p-2 rounded-lg flex items-center">
+                               <i class="fas fa-video text-lg text-purple-500 mr-2"></i>
+                               <p class="font-medium text-slate-700 text-xs">지능형 영상 분석</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="kpi-card p-6">
-                 <h3 class="text-xl font-bold text-slate-800 mb-4 text-left flex items-center">
-                    <i class="ph-lightbulb-filament text-3xl text-blue-500 mr-3"></i>
-                    주요 납품 솔루션
-                </h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="solution-item bg-slate-100 p-3 rounded-lg flex items-center justify-center space-x-2">
-                       <i class="ph-video-camera text-xl text-slate-500"></i>
-                       <p class="font-medium text-slate-700 text-sm">차량 번호 인식</p>
-                    </div>
-                     <div class="solution-item bg-slate-100 p-3 rounded-lg flex items-center justify-center space-x-2">
-                       <i class="ph-waves text-xl text-slate-500"></i>
-                       <p class="font-medium text-slate-700 text-sm">스마트 소하천</p>
-                    </div>
-                     <div class="solution-item bg-slate-100 p-3 rounded-lg flex items-center justify-center space-x-2">
-                       <i class="ph-intersect text-xl text-slate-500"></i>
-                       <p class="font-medium text-slate-700 text-sm">스마트 교차로</p>
-                    </div>
-                     <div class="solution-item bg-slate-100 p-3 rounded-lg flex items-center justify-center space-x-2">
-                       <i class="ph-scan text-xl text-slate-500"></i>
-                       <p class="font-medium text-slate-700 text-sm">지능형 영상 분석</p>
+            
+            <section>
+                <h2 class="text-xl font-bold text-gray-800 mb-3 text-center">전체 지역 보기</h2>
+                <p class="text-center text-slate-500 mb-4 text-sm">지역 카드를 클릭하여 상세 납품처를 확인하세요.</p>
+                <div class="region-grid-container">
+                    <div id="region-grid" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 pr-2">
+                        <!-- Region cards will be injected here by JavaScript -->
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
+    </div>
 
-        <!-- Main Dashboard Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Left: Chart -->
-            <div class="chart-card p-6">
-                 <h2 class="text-2xl font-bold text-slate-800 mb-4 text-center">지역별 납품 실적 현황</h2>
-                <div class="h-[600px]">
-                    <canvas id="performanceChart"></canvas>
-                </div>
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4 border-b-2 pb-2 border-blue-200">
+                <h3 id="modal-title" class="text-xl font-bold text-gray-900"></h3>
+                <button id="close-modal" class="p-1 rounded-full hover:bg-slate-200 transition-colors">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
             </div>
-            <!-- Right: Details List -->
-            <div class="list-card p-6 flex flex-col">
-                <div id="info-default" class="text-center text-slate-400 flex flex-col justify-center items-center h-full">
-                    <i class="ph-cursor-click text-6xl info-placeholder-icon"></i>
-                    <p class="mt-4 font-medium">차트에서 지역을 선택하여<br>상세 납품처를 확인하세요.</p>
-                </div>
-                <div id="info-details" class="hidden flex-1 flex flex-col">
-                   <h2 id="info-title" class="text-2xl font-bold text-slate-800 mb-4 border-b-2 pb-3 border-slate-200 text-center"></h2>
-                   <ul id="info-list" class="details-list flex-1 overflow-y-auto pr-4 space-y-2 mt-4">
-                       <!-- Client list will be populated here -->
-                   </ul>
-               </div>
-            </div>
+            <ul id="modal-list" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-gray-700"></ul>
         </div>
     </div>
 
     <script>
-        /** Oopy.io & Notion Embed Resizer */
-        (function() { if (window.self === window.top) return; const resizer = { lastHeight: 0, debounceTimer: null, sendHeight: function() { requestAnimationFrame(() => { const currentHeight = document.documentElement.scrollHeight; if (currentHeight !== this.lastHeight) { this.lastHeight = currentHeight; window.parent.postMessage({ oopyEvent: 'setHeight', height: currentHeight }, '*'); } }); }, init: function() { const observer = new MutationObserver(() => { clearTimeout(this.debounceTimer); this.debounceTimer = setTimeout(() => this.sendHeight(), 150); }); observer.observe(document.body, { attributes: true, childList: true, subtree: true, characterData: true }); window.addEventListener('resize', () => this.sendHeight()); window.addEventListener('load', () => { this.sendHeight(); setTimeout(() => this.sendHeight(), 500); }); } }; resizer.init(); })();
-
         document.addEventListener('DOMContentLoaded', () => {
             const performanceData = {
-                seoul: { title: '서울특별시', clients: ['동작구청', '서울어린이대공원 관리사업소'] },
-                gyeonggi: { title: '경기도', clients: ['군포시청', '남양주시청', '수원시청', '안산시청', '용인 SLIVCITY'] },
-                incheon: { title: '인천광역시', clients: ['강화도', '송도 SLIVCITY'] },
-                gangwon: { title: '강원도', clients: ['동해시청', '삼척시청', '영월군청', '인제군청', '원주시청', '철원군청', '태백시청', '홍천군청', '춘천시청'] },
-                chungbuk: { title: '충청북도', clients: ['단양군청', '보은군청', '옥천군청', '제천시청', '충청북도 교육청', '한국농어촌공사 충북지역본부'] },
-                chungnam: { title: '충청남도', clients: ['금산군청', '당진시청'] },
-                sejong: { title: '세종특별자치시', clients: ['세종특별자치시'] },
-                gyeongbuk: { title: '경상북도', clients: ['경산시청', '경주시청', '고령군청', '김천시청', '구미시청', '봉화군청', '상주시청', '성주군청', '안동시청', '영양군청', '영주시청', '울진군청', '영천시청', '예천군청', '청도군청', '포항시청', '칠곡군청'] },
-                jeonbuk: { title: '전라북도', clients: ['장수군청'] },
-                daegu: { title: '대구광역시', clients: ['대구동구청', '달성군청'] },
-                jeonnam: { title: '전라남도', clients: ['곡성군청', '구례군청', '담양군청', '보성군청', '완도군청', '영암군청', '여수시청', '장흥군청', '한국수력원자력(주) 한빛원자력본부', '해남군청', '화순군청'] },
-                gyeongnam: { title: '경상남도', clients: ['고성군청', '거창군청', '거제시청', '김해시청', '진주시청', '창녕군청', '통영시청', '하동군청', '함양군청', '합천군청', '함안군청', '사천시청', '창원시청'] },
-                ulsan: { title: '울산광역시', clients: ['울산동구청', '울산중구청'] },
-                busan: { title: '부산광역시', clients: ['기장군 고리원자력발전소', '기장군청', '부산진구청', '부산시청', '부산항만공사'] },
-                jeju: { title: '제주특별자치도', clients: ['제주특별자치도'] },
-                daejeon: { title: '대전광역시', clients: [] },
-                gwangju: { title: '광주광역시', clients: [] },
+                seoul: { title: '서울', clients: ['동작구청', '서울어린이대공원 관리사업소'] },
+                gyeonggi: { title: '경기', clients: ['군포시청', '남양주시청', '수원시청', '안산시청', '용인 SLIVCITY'] },
+                incheon: { title: '인천', clients: ['강화도', '송도 SLIVCITY'] },
+                gangwon: { title: '강원', clients: ['동해시청', '삼척시청', '영월군청', '인제군청', '원주시청', '철원군청', '태백시청', '홍천군청', '춘천시청'] },
+                chungbuk: { title: '충북', clients: ['단양군청', '보은군청', '옥천군청', '제천시청', '충청북도 교육청', '한국농어촌공사 충북지역본부'] },
+                chungnam: { title: '충남', clients: ['금산군청', '당진시청'] },
+                sejong: { title: '세종', clients: ['세종특별자치시'] },
+                gyeongbuk: { title: '경북', clients: ['경산시청', '경주시청', '고령군청', '김천시청', '구미시청', '봉화군청', '상주시청', '성주군청', '안동시청', '영양군청', '영주시청', '울진군청', '영천시청', '예천군청', '청도군청', '포항시청', '칠곡군청'] },
+                jeonbuk: { title: '전북', clients: ['장수군청'] },
+                daegu: { title: '대구', clients: ['대구동구청', '달성군청'] },
+                jeonnam: { title: '전남', clients: ['곡성군청', '구례군청', '담양군청', '보성군청', '완도군청', '영암군청', '여수시청', '장흥군청', '한국수력원자력(주) 한빛원자력본부', '해남군청', '화순군청'] },
+                gyeongnam: { title: '경남', clients: ['고성군청', '거창군청', '거제시청', '김해시청', '진주시청', '창녕군청', '통영시청', '하동군청', '함양군청', '합천군청', '함안군청', '사천시청', '창원시청'] },
+                ulsan: { title: '울산', clients: ['울산동구청', '울산중구청'] },
+                busan: { title: '부산', clients: ['기장군 고리원자력발전소', '기장군청', '부산진구청', '부산시청', '부산항만공사'] },
+                jeju: { title: '제주', clients: ['제주특별자치도'] },
             };
 
-            const infoDefault = document.getElementById('info-default');
-            const infoDetails = document.getElementById('info-details');
-            const infoTitle = document.getElementById('info-title');
-            const infoList = document.getElementById('info-list');
+            const regionGrid = document.getElementById('region-grid');
+            const modalOverlay = document.getElementById('modal-overlay');
+            const modalTitle = document.getElementById('modal-title');
+            const modalList = document.getElementById('modal-list');
+            const closeModalButton = document.getElementById('close-modal');
             let chart;
-            let activeRegionTitle = null;
-            
-            const sortedDataForChart = Object.values(performanceData)
-                .filter(d => d.clients.length > 0)
-                .sort((a, b) => b.clients.length - a.clients.length);
-            
+            let activeCard = null;
+
+            function getGradientColor(value, maxValue) {
+                // 그라디언트 대신 단일 색상 사용
+                const colors = [
+                    '#dbeafe', // 가장 낮은 값 (light blue)
+                    '#bfdbfe',
+                    '#93c5fd',
+                    '#60a5fa',
+                    '#3b82f6', // 중간 값 (medium blue)
+                    '#2563eb',
+                    '#1d4ed8',
+                    '#1e40af',
+                    '#1e3a8a'  // 가장 높은 값 (dark blue)
+                ];
+                
+                const ratio = Math.sqrt(value / maxValue);
+                const index = Math.min(Math.floor(ratio * colors.length), colors.length - 1);
+                return colors[index];
+            }
+
             function createChart() {
                 const ctx = document.getElementById('performanceChart').getContext('2d');
-                const labels = sortedDataForChart.map(d => d.title);
-                const data = sortedDataForChart.map(d => d.clients.length);
+                const sortedData = Object.entries(performanceData).sort(([, a], [, b]) => b.clients.length - a.clients.length);
+                
+                const labels = sortedData.map(([, data]) => data.title);
+                const data = sortedData.map(([, data]) => data.clients.length);
+                const maxValue = Math.max(...data);
+
+                const backgroundColors = data.map(value => getGradientColor(value, maxValue));
+                const borderColors = data.map(value => getGradientColor(value, maxValue));
 
                 chart = new Chart(ctx, {
                     type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: '납품처 수',
-                            data: data,
-                            backgroundColor: 'rgba(59, 130, 246, 0.5)',
-                            borderColor: 'rgba(59, 130, 246, 1)',
-                            borderWidth: 2,
-                            borderRadius: 6,
-                            hoverBackgroundColor: 'rgba(99, 102, 241, 0.8)',
-                            hoverBorderColor: 'rgba(99, 102, 241, 1)',
-                        }]
+                    data: { 
+                        labels, 
+                        datasets: [{ 
+                            label: '납품 시군구 수', 
+                            data, 
+                            backgroundColor: backgroundColors, 
+                            borderColor: borderColors, 
+                            hoverBackgroundColor: '#f59e0b', 
+                            borderWidth: 1, 
+                            borderRadius: 4 
+                        }] 
                     },
                     options: {
+                        indexAxis: 'y',
                         responsive: true,
                         maintainAspectRatio: false,
-                        indexAxis: 'y',
                         scales: { 
-                            x: { beginAtZero: true, grid: { color: '#e5e7eb' }, ticks: { font: { size: 12 } } }, 
-                            y: { grid: { display: false }, ticks: { font: { size: 14, weight: '500' } } } 
+                            x: { 
+                                beginAtZero: true, 
+                                grid: { color: '#e2e8f0' },
+                                ticks: { font: { size: 11 } }
+                            }, 
+                            y: { 
+                                grid: { display: false },
+                                ticks: { font: { size: 11 } }
+                            }
                         },
                         plugins: { 
                             legend: { display: false },
-                            tooltip: {
-                                backgroundColor: '#1e293b',
-                                titleFont: { size: 14, weight: 'bold' },
-                                bodyFont: { size: 12 },
-                                padding: 10,
-                                cornerRadius: 4,
-                                callbacks: { label: (context) => ` ${context.raw}개 납품처` }
+                            tooltip: { 
+                                callbacks: { 
+                                    label: (context) => ` ${context.raw}개 시군구` 
+                                } 
                             }
                         },
-                        animation: {
-                            duration: 1200,
-                            easing: 'easeInOutCubic',
-                        },
-                         onClick: (event, elements) => {
+                        onClick: (event, elements) => {
                             if (elements.length > 0) {
-                                const regionTitle = chart.data.labels[elements[0].index];
-                                updateInfo(regionTitle);
+                                const regionLabel = chart.data.labels[elements[0].index];
+                                const regionId = Object.keys(performanceData).find(key => performanceData[key].title === regionLabel);
+                                if (regionId) showModal(regionId);
                             }
                         }
                     }
                 });
             }
 
-            function updateInfo(regionTitle) {
-                if (activeRegionTitle === regionTitle) {
-                    activeRegionTitle = null;
-                    infoDefault.classList.remove('hidden');
-                    infoDetails.classList.add('hidden');
-                } else {
-                    activeRegionTitle = regionTitle;
-                    const regionData = Object.values(performanceData).find(d => d.title === regionTitle);
-                    
-                    if (!regionData) return;
-                    
-                    infoDefault.classList.add('hidden');
-                    infoDetails.classList.remove('hidden');
-                    
-                    infoTitle.textContent = `${regionData.title} 납품처`;
-                    infoList.innerHTML = regionData.clients.length > 0
-                        ? regionData.clients.map(client => `<li class="p-2 rounded-md hover:bg-slate-100">${client}</li>`).join('')
-                        : '<li>납품 실적이 없습니다.</li>';
+            function showModal(regionId) {
+                const regionData = performanceData[regionId];
+                modalTitle.textContent = `${regionData.title} (${regionData.clients.length}개 시군구)`;
+                modalList.innerHTML = regionData.clients.map(client => 
+                    `<li class="flex items-start py-1"><i class="fas fa-check-circle text-blue-500 mt-1 mr-2 flex-shrink-0"></i><span class="text-sm">${client}</span></li>`
+                ).join('');
+                
+                modalOverlay.classList.add('show');
+                
+                if (activeCard) activeCard.classList.remove('active');
+                
+                const newActiveCard = document.getElementById(`card-${regionId}`);
+                if (newActiveCard) {
+                    newActiveCard.classList.add('active');
+                    activeCard = newActiveCard;
                 }
-                updateChartColors();
+
+                updateChartHighlight(regionData.title);
             }
 
-            function updateChartColors() {
-                const dataset = chart.data.datasets[0];
-                const newBgColors = [];
-                const newBorderColors = [];
-                
-                chart.data.labels.forEach(label => {
-                    if (label === activeRegionTitle) {
-                        newBgColors.push('rgba(124, 58, 237, 0.8)'); // Active color
-                        newBorderColors.push('rgba(124, 58, 237, 1)');
-                    } else {
-                        newBgColors.push('rgba(59, 130, 246, 0.5)'); // Default color
-                        newBorderColors.push('rgba(59, 130, 246, 1)');
-                    }
+            function hideModal() {
+                modalOverlay.classList.remove('show');
+                if (activeCard) {
+                    activeCard.classList.remove('active');
+                    activeCard = null;
+                }
+                resetChartColors();
+            }
+
+            function updateChartHighlight(regionTitle) {
+                const data = chart.data.datasets[0].data;
+                const labels = chart.data.labels;
+                const maxValue = Math.max(...data);
+
+                const backgroundColors = labels.map((label, index) => {
+                    const id = Object.keys(performanceData).find(key => performanceData[key].title === label);
+                    const value = performanceData[id].clients.length;
+                    return label === regionTitle ? '#f59e0b' : getGradientColor(value, maxValue);
                 });
-                dataset.backgroundColor = newBgColors;
-                dataset.borderColor = newBorderColors;
+                
+                chart.data.datasets[0].backgroundColor = backgroundColors;
                 chart.update();
             }
 
+            function resetChartColors() {
+                const data = chart.data.datasets[0].data;
+                const labels = chart.data.labels;
+                const maxValue = Math.max(...data);
+                
+                chart.data.datasets[0].backgroundColor = labels.map(label => {
+                    const id = Object.keys(performanceData).find(key => performanceData[key].title === label);
+                    const value = performanceData[id].clients.length;
+                    return getGradientColor(value, maxValue);
+                });
+                chart.update();
+            }
+
+            function createRegionGrid() {
+                const sortedRegions = Object.entries(performanceData).sort(([,a],[,b]) => b.clients.length - a.clients.length);
+                
+                for (const [regionId, data] of sortedRegions) {
+                    if (data.clients.length > 0) {
+                        const card = document.createElement('div');
+                        card.id = `card-${regionId}`;
+                        card.className = 'region-card bg-white p-3 rounded-lg shadow-md border-2 border-transparent cursor-pointer text-center';
+                        card.innerHTML = `
+                            <p class="font-bold text-sm text-gray-800">${data.title}</p>
+                            <p class="text-xs text-blue-600">${data.clients.length}개</p>
+                        `;
+                        card.addEventListener('click', () => showModal(regionId));
+                        regionGrid.appendChild(card);
+                    }
+                }
+            }
+
+            closeModalButton.addEventListener('click', hideModal);
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) hideModal();
+            });
+
             createChart();
+            createRegionGrid();
         });
     </script>
 </body>
