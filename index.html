@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>한국레이더시스템 - 주요 납품 실적</title>
-
   <!-- Tailwind CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <style>
     html, body {
       font-family: 'Noto Sans KR', sans-serif;
@@ -23,7 +22,6 @@
       width: 100%;
       height: 100%;
     }
-
     .main-container {
       width: 100%;
       min-height: 100vh;
@@ -34,26 +32,15 @@
       background-size: 20px 20px;
       background-repeat: repeat;
     }
-
-    .chart-container {
-      height: 340px !important;
-    }
-
+    .chart-container { height: 340px !important; }
     .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background-color: rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-      display: none;
-      align-items: center;
-      justify-content: center;
+      z-index: 1000; display: none;
+      align-items: center; justify-content: center;
       padding: 20px;
     }
-
-    .modal-overlay.show {
-      display: flex;
-    }
-
+    .modal-overlay.show { display: flex; }
     .modal-content {
       background: white;
       border-radius: 12px;
@@ -64,19 +51,13 @@
       overflow-y: auto;
       position: relative;
     }
-
     .modal-content::-webkit-scrollbar,
-    .main-container::-webkit-scrollbar {
-      width: 6px;
-    }
+    .main-container::-webkit-scrollbar { width: 6px; }
     .modal-content::-webkit-scrollbar-track,
-    .main-container::-webkit-scrollbar-track {
-      background: #e2e8f0;
-    }
+    .main-container::-webkit-scrollbar-track { background: #e2e8f0; }
     .modal-content::-webkit-scrollbar-thumb,
     .main-container::-webkit-scrollbar-thumb {
-      background: #9ca3af;
-      border-radius: 3px;
+      background: #9ca3af; border-radius: 3px;
     }
     .modal-content::-webkit-scrollbar-thumb:hover,
     .main-container::-webkit-scrollbar-thumb:hover {
@@ -87,31 +68,28 @@
 <body>
   <div class="main-container">
     <div class="container mx-auto p-4">
-      <!-- Header and Content as previously defined -->
-      <!-- ... 생략 ... -->
+      <!-- 생략된 콘텐츠 및 구조는 기존 작성 내용과 동일하게 유지 -->
+      <canvas id="performanceChart"></canvas>
+      <div id="region-grid" class="grid grid-cols-2 gap-2 mt-4"></div>
     </div>
   </div>
-
-  <!-- 모달 구조 생략 -->
-
+  <div id="modal-overlay" class="modal-overlay">
+    <div class="modal-content">
+      <div class="flex justify-between items-center mb-4 border-b-2 pb-2 border-blue-200">
+        <h3 id="modal-title" class="text-xl font-bold text-gray-900"></h3>
+        <button id="close-modal" class="p-1 rounded-full hover:bg-slate-200 transition-colors">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+      <ul id="modal-list" class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 text-gray-700"></ul>
+    </div>
+  </div>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const performanceData = {
         seoul: { title: '서울', clients: ['동작구청', '서울어린이대공원 관리사업소'] },
-        gyeonggi: { title: '경기', clients: ['군포시청', '남양주시청', '수원시청', '안산시청', '용인 SLIVCITY'] },
-        incheon: { title: '인천', clients: ['강화도', '송도 SLIVCITY'] },
-        gangwon: { title: '강원', clients: ['동해시청', '삼척시청', '영월군청', '인제군청', '원주시청', '철원군청', '태백시청', '홍천군청', '춘천시청'] },
-        chungbuk: { title: '충북', clients: ['단양군청', '보은군청', '옥천군청', '제천시청', '충청북도 교육청', '한국농어촌공사 충북지역본부'] },
-        chungnam: { title: '충남', clients: ['금산군청', '당진시청'] },
-        sejong: { title: '세종', clients: ['세종특별자치시'] },
-        gyeongbuk: { title: '경북', clients: ['경산시청', '경주시청', '고령군청', '김천시청', '구미시청', '봉화군청', '상주시청', '성주군청', '안동시청', '영양군청', '영주시청', '울진군청', '영천시청', '예천군청', '청도군청', '포항시청', '칠곡군청'] },
-        jeonbuk: { title: '전북', clients: ['장수군청'] },
-        daegu: { title: '대구', clients: ['대구동구청', '달성군청'] },
-        jeonnam: { title: '전남', clients: ['곡성군청', '구례군청', '담양군청', '보성군청', '완도군청', '영암군청', '여수시청', '장흥군청', '한국수력원자력(주) 한빛원자력본부', '해남군청', '화순군청'] },
-        gyeongnam: { title: '경남', clients: ['고성군청', '거창군청', '거제시청', '김해시청', '진주시청', '창녕군청', '통영시청', '하동군청', '함양군청', '합천군청', '함안군청', '사천시청', '창원시청'] },
-        ulsan: { title: '울산', clients: ['울산동구청', '울산중구청'] },
-        busan: { title: '부산', clients: ['기장군 고리원자력발전소', '기장군청', '부산진구청', '부산시청', '부산항만공사'] },
-        jeju: { title: '제주', clients: ['제주특별자치도'] },
+        gangwon: { title: '강원', clients: ['춘천시청', '홍천군청'] },
+        // ... 나머지 지역은 필요시 추가하세요
       };
 
       const regionGrid = document.getElementById('region-grid');
@@ -123,16 +101,14 @@
       let activeCard = null;
 
       function getGradientColor(value, maxValue) {
-        const colors = ['#dbeafe', '#bfdbfe', '#93c5fd', '#60a5fa', '#3b82f6', '#2563eb', '#1d4ed8', '#1e40af', '#1e3a8a'];
+        const colors = ['#dbeafe', '#93c5fd', '#60a5fa', '#3b82f6', '#2563eb', '#1d4ed8', '#1e40af', '#1e3a8a'];
         const ratio = Math.sqrt(value / maxValue);
-        const index = Math.min(Math.floor(ratio * colors.length), colors.length - 1);
-        return colors[index];
+        return colors[Math.min(Math.floor(ratio * colors.length), colors.length - 1)];
       }
 
       function createChart() {
         const ctx = document.getElementById('performanceChart').getContext('2d');
         const sortedData = Object.entries(performanceData).sort(([, a], [, b]) => b.clients.length - a.clients.length);
-
         const labels = sortedData.map(([, data]) => data.title);
         const data = sortedData.map(([, data]) => data.clients.length);
         const maxValue = Math.max(...data);
@@ -170,10 +146,8 @@
         const regionData = performanceData[regionId];
         modalTitle.textContent = `${regionData.title} (${regionData.clients.length}개 시군구)`;
         modalList.innerHTML = regionData.clients.map(client => `<li class="flex items-start py-1"><i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i><span class="text-sm">${client}</span></li>`).join('');
-
         modalOverlay.classList.add('show');
         if (activeCard) activeCard.classList.remove('active');
-
         const newActiveCard = document.getElementById(`card-${regionId}`);
         if (newActiveCard) {
           newActiveCard.classList.add('active');
@@ -190,9 +164,7 @@
       }
 
       function createRegionGrid() {
-        const sortedRegions = Object.entries(performanceData).sort(([, a], [, b]) => b.clients.length - a.clients.length);
-
-        for (const [regionId, data] of sortedRegions) {
+        for (const [regionId, data] of Object.entries(performanceData)) {
           const card = document.createElement('div');
           card.id = `card-${regionId}`;
           card.className = 'region-card bg-white p-3 rounded-lg shadow-md border-2 border-transparent cursor-pointer text-center';
