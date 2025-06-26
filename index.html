@@ -6,37 +6,40 @@
     <title>한국레이더시스템 - 주요 납품 실적</title>
     
     <!-- Tailwind CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
     
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <style>
+        /* 기본 폰트 및 배경색 설정 */
         body {
             font-family: 'Noto Sans KR', sans-serif;
             background-color: #f8fafc;
             color: #1e293b;
             margin: 0;
             padding: 0;
-            overflow: hidden;
         }
         
+        /* 메인 컨테이너를 반응형으로 만듭니다. */
         .main-container {
-            width: 1280px;
-            height: 800px;
-            overflow-y: auto;
+            width: 100%; /* 너비를 100%로 설정 */
+            max-width: 1280px; /* 최대 너비를 1280px로 제한하여 큰 화면에서 너무 넓어지지 않게 함 */
+            margin: 0 auto; /* 좌우 마진을 auto로 주어 중앙 정렬 */
             background-color: #f8fafc;
+            /* 배경 이미지는 유지 */
             background-image: url('https://cdn.jsdelivr.net/gh/joaopereirawd/fakeLoader.js@1.1.0/img/dot.svg');
             background-size: 20px 20px;
             background-repeat: repeat;
         }
         
+        /* 카드 호버 효과 */
         .solution-card, .region-card {
             transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
         }
@@ -50,10 +53,12 @@
             transform: translateY(-2px);
         }
         
+        /* 차트 컨테이너 높이 고정 */
         .chart-container {
             height: 340px !important;
         }
         
+        /* 모달 오버레이 */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -74,7 +79,7 @@
             padding: 24px;
             max-width: 600px;
             width: 100%;
-            max-height: 500px;
+            max-height: 90vh; /* 화면 높이의 90%로 최대 높이 제한 */
             overflow-y: auto;
             position: relative;
         }
@@ -83,28 +88,31 @@
             display: flex;
         }
         
+        /* 커스텀 스크롤바 */
         .modal-content::-webkit-scrollbar,
-        .main-container::-webkit-scrollbar {
+        .region-grid-container::-webkit-scrollbar {
             width: 6px;
         }
         .modal-content::-webkit-scrollbar-track,
-        .main-container::-webkit-scrollbar-track {
+        .region-grid-container::-webkit-scrollbar-track {
             background: #e2e8f0;
         }
         .modal-content::-webkit-scrollbar-thumb,
-        .main-container::-webkit-scrollbar-thumb {
+        .region-grid-container::-webkit-scrollbar-thumb {
             background: #9ca3af;
             border-radius: 3px;
         }
         .modal-content::-webkit-scrollbar-thumb:hover,
-        .main-container::-webkit-scrollbar-thumb:hover {
+        .region-grid-container::-webkit-scrollbar-thumb:hover {
             background: #6b7280;
         }
         
+        /* 헤더 스타일 */
         .header-minimal {
             background-color: #e0e7ff;
         }
         
+        /* 지역 그리드 컨테이너 (스크롤바 추가) */
         .region-grid-container {
             max-height: 240px;
             overflow-y: auto;
@@ -113,7 +121,7 @@
 </head>
 <body>
     <div class="main-container">
-        <div class="container mx-auto p-3">
+        <div class="container mx-auto p-3 sm:p-4 md:p-6">
             
             <header class="text-center mb-6 py-6 rounded-lg header-minimal">
                 <h1 class="text-3xl font-black text-gray-900">한국레이더시스템 주요 납품 실적</h1>
@@ -219,19 +227,10 @@
             let activeCard = null;
 
             function getGradientColor(value, maxValue) {
-                // 그라디언트 대신 단일 색상 사용
                 const colors = [
-                    '#dbeafe', // 가장 낮은 값 (light blue)
-                    '#bfdbfe',
-                    '#93c5fd',
-                    '#60a5fa',
-                    '#3b82f6', // 중간 값 (medium blue)
-                    '#2563eb',
-                    '#1d4ed8',
-                    '#1e40af',
-                    '#1e3a8a'  // 가장 높은 값 (dark blue)
+                    '#dbeafe', '#bfdbfe', '#93c5fd', '#60a5fa', 
+                    '#3b82f6', '#2563eb', '#1d4ed8', '#1e40af', '#1e3a8a'
                 ];
-                
                 const ratio = Math.sqrt(value / maxValue);
                 const index = Math.min(Math.floor(ratio * colors.length), colors.length - 1);
                 return colors[index];
@@ -331,9 +330,10 @@
                 const maxValue = Math.max(...data);
 
                 const backgroundColors = labels.map((label, index) => {
+                    if (label === regionTitle) return '#f59e0b';
                     const id = Object.keys(performanceData).find(key => performanceData[key].title === label);
                     const value = performanceData[id].clients.length;
-                    return label === regionTitle ? '#f59e0b' : getGradientColor(value, maxValue);
+                    return getGradientColor(value, maxValue);
                 });
                 
                 chart.data.datasets[0].backgroundColor = backgroundColors;
