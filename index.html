@@ -25,10 +25,19 @@
             color: #1e293b;
             margin: 0;
             padding: 0;
-            /* PC에서 노션 임베드 시 스크롤바가 생기는 것을 방지합니다. */
-            overflow: hidden;
+            /* 모바일과 같은 작은 화면에서는 스크롤을 허용합니다. */
+            overflow: auto;
         }
         
+        /* ▼▼▼ 수정된 부분 ▼▼▼ */
+        /* PC 화면(1024px 이상)에서는 노션 임베드를 위해 스크롤을 숨깁니다. */
+        @media (min-width: 1024px) {
+            body {
+                overflow: hidden;
+            }
+        }
+        /* ▲▲▲ 수정된 부분 ▲▲▲ */
+
         /* 메인 컨테이너 */
         .main-container {
             width: 100%;
@@ -125,10 +134,7 @@
                         <canvas id="performanceChart"></canvas>
                     </div>
                 </div>
-                <!-- ▼▼▼ 수정된 부분 ▼▼▼ -->
-                <!-- 모바일에서는 2열 그리드로, PC(lg)에서는 1열 그리드로 변경하여 레이아웃 최적화 -->
                 <div class="lg:col-span-1 grid grid-cols-2 lg:grid-cols-1 gap-3">
-                    <!-- '납품 지자체 현황' 카드에서 불필요한 flex-grow 클래스 제거 -->
                     <div class="bg-white p-3 rounded-lg shadow-lg border border-slate-200 text-center relative overflow-hidden">
                         <i class="fas fa-map text-6xl text-slate-100 absolute -right-2 -bottom-2"></i>
                         <div class="relative z-10">
@@ -165,7 +171,6 @@
                         </div>
                     </div>
                 </div>
-                 <!-- ▲▲▲ 수정된 부분 ▲▲▲ -->
             </div>
             
             <section>
