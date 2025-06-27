@@ -25,11 +25,11 @@
             color: #1e293b;
             margin: 0;
             padding: 0;
-            /* 노션 임베드 시 스크롤바가 생기는 것을 방지합니다. */
+            /* PC에서 노션 임베드 시 스크롤바가 생기는 것을 방지합니다. */
             overflow: hidden;
         }
         
-        /* 메인 컨테이너를 반응형으로 만듭니다. */
+        /* 메인 컨테이너 */
         .main-container {
             width: 100%;
             max-width: 1280px;
@@ -54,7 +54,7 @@
             transform: translateY(-2px);
         }
         
-        /* 차트 컨테이너 높이 조정 */
+        /* 차트 컨테이너 높이 */
         .chart-container {
             height: 300px !important;
         }
@@ -89,7 +89,7 @@
             display: flex;
         }
         
-        /* 커스텀 스크롤바 */
+        /* 커스텀 스크롤바 (모달용) */
         .modal-content::-webkit-scrollbar {
             width: 6px;
         }
@@ -104,29 +104,20 @@
             background: #6b7280;
         }
         
-        /* 헤더 스타일 */
         .header-minimal {
             background-color: #e0e7ff;
-        }
-        
-        /* 지역 그리드 컨테이너에서 max-height와 overflow-y 제거 */
-        .region-grid-container {
-            /* No specific height or overflow properties */
         }
     </style>
 </head>
 <body>
     <div class="main-container">
-        <!-- 전체적인 패딩을 줄여 세로 길이를 확보합니다. -->
         <div class="container mx-auto p-3">
             
-            <!-- 헤더의 상하 패딩과 하단 마진, 폰트 크기를 줄입니다. -->
             <header class="text-center mb-3 py-3 rounded-lg header-minimal">
                 <h1 class="text-2xl font-black text-gray-900">한국레이더시스템 주요 납품 실적</h1>
                 <p class="text-sm text-gray-600 mt-1">전국 각지에 한국레이더시스템의 기술이 함께합니다.</p>
             </header>
 
-            <!-- 그리드의 하단 마진과 간격을 줄입니다. -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-3">
                 <div class="lg:col-span-2 bg-white p-3 rounded-lg shadow-lg border border-slate-200">
                     <h2 class="text-base font-bold text-gray-800 mb-2 text-center">지역별 납품 실적 현황</h2>
@@ -134,8 +125,11 @@
                         <canvas id="performanceChart"></canvas>
                     </div>
                 </div>
-                <div class="lg:col-span-1 flex flex-col gap-3">
-                    <div class="bg-white p-3 rounded-lg shadow-lg border border-slate-200 text-center relative overflow-hidden flex-grow">
+                <!-- ▼▼▼ 수정된 부분 ▼▼▼ -->
+                <!-- 모바일에서는 2열 그리드로, PC(lg)에서는 1열 그리드로 변경하여 레이아웃 최적화 -->
+                <div class="lg:col-span-1 grid grid-cols-2 lg:grid-cols-1 gap-3">
+                    <!-- '납품 지자체 현황' 카드에서 불필요한 flex-grow 클래스 제거 -->
+                    <div class="bg-white p-3 rounded-lg shadow-lg border border-slate-200 text-center relative overflow-hidden">
                         <i class="fas fa-map text-6xl text-slate-100 absolute -right-2 -bottom-2"></i>
                         <div class="relative z-10">
                             <i class="fas fa-map-pin text-3xl text-blue-500 mx-auto mb-2"></i>
@@ -171,6 +165,7 @@
                         </div>
                     </div>
                 </div>
+                 <!-- ▲▲▲ 수정된 부분 ▲▲▲ -->
             </div>
             
             <section>
@@ -359,7 +354,6 @@
                     if (data.clients.length > 0) {
                         const card = document.createElement('div');
                         card.id = `card-${regionId}`;
-                        // 카드 내부 패딩을 줄여 높이를 최적화합니다.
                         card.className = 'region-card bg-white p-2 rounded-lg shadow-md border-2 border-transparent cursor-pointer text-center';
                         card.innerHTML = `
                             <p class="font-bold text-sm text-gray-800">${data.title}</p>
